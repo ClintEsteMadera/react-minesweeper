@@ -24,6 +24,14 @@ class Table extends Component {
     }
   }
 
+  newGame = event => {
+    axios
+      .post(`https://minesweeper-api.herokuapp.com/games`)
+      .then({ game: this.updateState })
+  }
+
+  updateState = response => this.setState({ game: response.data })
+
   fetchTheBoard = () => {
     axios
       .post('https://minesweeper-api.herokuapp.com/games/')
@@ -34,9 +42,30 @@ class Table extends Component {
       })
   }
 
-  // componentDidMount = () => {
-  //   this.fetchTheBoard()
-  // }
+  checkCell = (rowIndex, col) => {
+    this.flagOrCheck(rowIndex, col, 'check')
+  }
+
+  flagCell = (rowIndex, col) => {
+    this.flagOrCheck(rowIndex, col, 'flag')
+  }
+
+  flagOrCheck = (rowIndex, col, action) => {
+    console.log(this.state.game.id)
+    console.log(`inside flagOrCheck ${rowIndex} ${col}`)
+    axios
+      .post(
+        `https://minesweeper-api.herokuapp.com/games/${
+          this.state.game.id
+        }/${action}`,
+        {
+          row: rowIndex,
+          col: col
+        }
+      )
+      .then(this.updateState)
+    console.log(this.state.game.id)
+  }
 
   gameNumberRow = () => {
     if (this.state.game.id > 0) {
@@ -59,13 +88,15 @@ class Table extends Component {
                 <option>Medium</option>
                 <option>Hard</option>
               </select>
-              <button className="emoji-button">face</button>
+              <button className="emoji-button">🙂</button>
             </td>
           </tr>
           {this.gameNumberRow()}
           <Board
             fetchTheBoard={this.fetchTheBoard}
             board={this.state.game.board}
+            check={this.checkCell}
+            flag={this.flagCell}
           />
           <tr>
             <td className="table-footer">

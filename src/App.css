@@ -38,3 +38,7 @@ select {
   margin-left: 2rem;
   cursor: pointer;
 }
+
+.cell-checked {
+  background-color: lightgrey;
+}
