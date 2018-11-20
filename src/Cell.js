@@ -1,50 +1,22 @@
 import React, { Component } from 'react'
 
 class Cell extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {}
+  // allows cell to be checked for mines
+  checkCell = event => {
+    this.props.checkCell(this.props.row, this.props.col)
   }
 
-  handleCheckCell = event => {
-    console.log('checked!')
-    console.log(`My row is ${this.props.rowIndex}`)
-    console.log(`My col is ${this.props.col}`)
-    console.log(`My value is ${this.props.value}`)
-    this.props.check(this.props.rowIndex, this.props.col)
+  // allows cell to be flagged,
+  // ...meaning you think a mine is in it
+  flagCell = event => {
     event.preventDefault()
-  }
-
-  handleFlagCell = event => {
-    console.log('checked!')
-    console.log(`My row is ${this.props.rowIndex}`)
-    console.log(`My col is ${this.props.col}`)
-    this.props.flag(this.props.rowIndex, this.props.col)
-    event.preventDefault()
-  }
-
-  classNames = {
-    ' ': 'unchecked-cell',
-    F: 'flagged-cell',
-    '@': 'flagged-cell-after',
-    '*': 'bomb'
-  }
-
-  classValues = {
-    _: ' ',
-    F: '🚩',
-    '@': '🚩',
-    '*': '💣'
+    this.props.flagCell(this.props.row, this.props.col)
   }
 
   render() {
     return (
-      <td
-        onClick={this.handleCheckCell}
-        onContextMenu={this.handleFlagCell}
-        className={this.classNames[this.props.value] || 'cell-checked'}
-      >
-        {this.classValues[this.props.value] || this.props.value}
+      <td onClick={this.checkCell} onContextMenu={this.flagCell}>
+        {this.props.value}
       </td>
     )
   }
