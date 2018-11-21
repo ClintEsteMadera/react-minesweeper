@@ -8,40 +8,114 @@ body {
   width: 100vw;
   height: 100vh;
 }
+
+select {
+  height: 30px;
+  width: 110px;
+  font-size: 0.8rem;
+}
+
 button {
   cursor: pointer;
   margin: 0.5rem;
-  background-color: #999;
+  font-size: 1rem;
+  outline: none;
+  background: transparent;
+  border: none;
 }
+
 table {
   border-collapse: collapse;
 }
+
 .header {
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
+
+.new {
+  font-size: 1rem;
+}
+
+.playing {
+  font-size: 1rem;
+}
+
 .lost {
   color: #ddd;
   background-color: #a00;
+  font-size: 1rem;
 }
+
 .won {
   color: #ddd;
   background-color: #0a0;
+  font-size: 1rem;
 }
-.cell-flag {
-  color: #a00;
+
+.footer {
+  cursor: default;
 }
+
+.cell-flagged {
+  font-size: 1rem;
+}
+
 .cell-bomb {
-  font-size: 0.6rem;
+  font-size: 0.8rem;
 }
+
 .cell-covered {
   background-color: #aaa;
 }
+
 td {
   cursor: pointer;
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   line-height: 20px;
   vertical-align: middle;
   background-color: #ccc;
   border: 1px solid black;
+  text-align: center;
+  align-content: center;
+}
+
+.cell-covered {
+  background-color: #aaa;
+}
+
+.cell-1 {
+  color: green;
+}
+
+.cell-2 {
+  color: blue;
+}
+
+.cell-3 {
+  color: fuchsia;
+}
+
+.cell-4 {
+  color: purple;
+}
+
+.cell-5 {
+  color: red;
+}
+
+.cell-6 {
+  color: pink;
+}
+
+.cell-7 {
+  color: yellow;
+}
+
+.cell-8 {
+  color: teal;
+}
+
+.cell-9 {
+  color: brown;
 }
