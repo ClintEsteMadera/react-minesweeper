@@ -1,16 +1,20 @@
 import React, { Component } from 'react'
+import { decorate, computed, observable } from 'mobx'
+import { observer } from 'mobx-react'
+
+import ourGame from './Game'
 
 class Cell extends Component {
   // Allows cell to be checked for mines
   checkCell = event => {
-    this.props.checkCell(this.props.row, this.props.col)
+    ourGame.checkCell(this.props.row, this.props.col)
   }
 
   // Allows cell to be flagged,
   // ...meaning you think a mine is in it
   flagCell = event => {
     event.preventDefault()
-    this.props.flagCell(this.props.row, this.props.col)
+    ourGame.flagCell(this.props.row, this.props.col)
   }
 
   // Allows program to assign classNames to cells
@@ -65,4 +69,4 @@ class Cell extends Component {
   }
 }
 
-export default Cell
+export default observer(Cell)
