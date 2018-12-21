@@ -1,44 +1,32 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# React-Minesweeper
 
-## Available Scripts
+<img src="src/giphy-react-minesweeper.gif">
 
-In the project directory, you can run:
+### See it live
 
-### `npm start`
+https://react-minesweeper-dylanattal.surge.sh/
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Summary
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+This project is special to me because it was a lot of firsts. It was the first large project where I pulled data from an API; it was the first project where I broke down parts of the UI into React Components; and it was the first project where I used MobX for state management.
 
-### `npm test`
+I pulled data from the API https://minesweeper-api.herokuapp.com/. I used POST requests to create a new game, check a cell for a bomb, and flag cells that I thought had bombs in them. I imported the Axios library to perform API calls instead of using the standard `.fetch()`.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+I broke down the UI into separate Components in order to take advantage of repeating elements. The UI consists of the `Table`, `Board`, and `Cell` Components. The `Table` includes the top two rows and bottom row which give information about the game, like the difficulty and the amount of mines left. The `Board` `map`s over data from the API and renders rows of `Cell`s. This functionality of React kept me from repeating a lot of code and ensured each `Cell` had the correct functions passed down to it to check its contents.
 
-### `npm run build`
+I chose to update the state of the game through MobX. I put the "difficulty," "number of mines left," and "won/lost" state into the `Game` Component. That way when a player loses the game, the logic for displaying "You lose!" in the App.js file just references the state in `Game`.
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Project Goals
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+- [x] Create an app where the user can play a game of Minesweeper
+- [x] Build out a UI that resembles traditional Minesweeper
+- [x] Create three difficulty levels
+- [x] Connect the front end to a given API
+- [x] Create functions to handle checking the contents of a cell and flagging a cell
+- [x] Create logic to display the number of mines left
+- [x] Create logic to display the game number, "You win!" or "You lose!" based on the state of the game
+- [x] Make a button that starts a new game
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Technologies Used
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+HTML, CSS, Javascript, React, MobX
