@@ -1,6 +1,8 @@
 # React-Minesweeper
 
+<p align="center">
 <img src="src/giphy-react-minesweeper.gif">
+</p>
 
 ### See it live
 
