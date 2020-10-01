@@ -1,7 +1,7 @@
 import { decorate, observable } from 'mobx'
-import axios from 'axios'
+import { GamesApi } from 'minesweeper-sdk';
 
-const API_URL = 'https://minesweeper2020.herokuapp.com/api/games';
+const api = new GamesApi()
 
 class Game {
   constructor() {
@@ -31,17 +31,16 @@ class Game {
 
   // Use API to start a new game.
   startNewGame = () => {
+    const gameCreationData = {
+      username: "jchiocchio@gmail.com",
+      rowsCount: this.getSizeRow(),
+      columnsCount: this.getSizeColumn(),
+      minesCount: this.getMinesCount()
+    };
 
-    axios
-    .post(API_URL, {
-      "username": "jchiocchio@gmail.com",
-      "rowsCount": this.getSizeRow(),
-      "columnsCount": this.getSizeColumn(),
-      "minesCount": this.getMinesCount()
-    })
-    .then(response => {
+    api.createGame(gameCreationData).then(data => {
       this.playing = true;
-      this.game = response.data
+      this.game = data
     })
   }
 
@@ -95,17 +94,13 @@ class Game {
     if (!this.playing) {
       return
     }
-    axios
-    .patch(
-      `${API_URL}/${this.game.id}`,
-      {
-        row: row,
-        column: col,
-        cellUpdateAction: 'REVEAL'
-      }
-    )
-    .then(response => {
-      this.game = response.data
+    const gameUpdate = {
+      row: row,
+      column: col,
+      cellUpdateAction: 'REVEAL'
+    }
+    api.updateGame(this.game.id, gameUpdate).then(data => {
+      this.game = data
     })
   }
 
@@ -120,17 +115,13 @@ class Game {
     if (!this.playing) {
       return
     }
-    axios
-    .patch(
-      `${API_URL}/${this.game.id}`,
-      {
-        row: row,
-        column: col,
-        cellUpdateAction: 'ADD_RED_FLAG'
-      }
-    )
-    .then(response => {
-      this.game = response.data
+    const gameUpdate = {
+      row: row,
+      column: col,
+      cellUpdateAction: 'ADD_RED_FLAG'
+    }
+    api.updateGame(this.game.id, gameUpdate).then(data => {
+      this.game = data
     })
   };
 
@@ -141,17 +132,13 @@ class Game {
     if (!this.playing) {
       return
     }
-    axios
-    .patch(
-      `${API_URL}/${this.game.id}`,
-      {
-        row: row,
-        column: col,
-        cellUpdateAction: 'UNFLAG'
-      }
-    )
-    .then(response => {
-      this.game = response.data
+    const gameUpdate = {
+      row: row,
+      column: col,
+      cellUpdateAction: 'UNFLAG'
+    }
+    api.updateGame(this.game.id, gameUpdate).then(data => {
+      this.game = data
     })
   }
 
