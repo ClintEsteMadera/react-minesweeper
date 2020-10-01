@@ -1,39 +1,89 @@
-import { decorate, computed, observable } from 'mobx'
-import { observer } from 'mobx-react'
+import { decorate, observable } from 'mobx'
 import axios from 'axios'
+
+const API_URL = 'https://minesweeper2020.herokuapp.com/api/games';
 
 class Game {
   constructor() {
-    this.playing = false
-    this.difficulty = 0
-    this.api = {
-      id: 0,
-      board: [
-        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-      ],
-      state: 'new',
-      mines: 10
+    this.playing = false;
+    this.difficulty = 0;
+    this.game = {
+      id: "0",
+      name: "",
+      board: {
+        rowsCount: 8,
+        columnsCount: 8,
+        minesCount: 0,
+        cells: [
+          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+          [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+        ],
+      },
+      outcome: undefined
     }
   }
 
   // Use API to start a new game.
   startNewGame = () => {
+
     axios
-      .post('https://minesweeper-api.herokuapp.com/games/', {
-        difficulty: this.difficulty
-      })
-      .then(response => {
-        this.playing = true
-        this.api = response.data
-      })
+    .post(API_URL, {
+      "username": "jchiocchio@gmail.com",
+      "rowsCount": this.getSizeRow(),
+      "columnsCount": this.getSizeColumn(),
+      "minesCount": this.getMinesCount()
+    })
+    .then(response => {
+      this.playing = true;
+      this.game = response.data
+    })
   }
+
+  getSizeRow() {
+    switch (this.difficulty) {
+      case "0":
+        return 9;
+      case "1":
+        return 16;
+      case "2":
+        return 16;
+      default:
+        return 8;
+    }
+  }
+
+  getSizeColumn() {
+    switch (this.difficulty) {
+      case "0":
+        return 9;
+      case "1":
+        return 16;
+      case "2":
+        return 30;
+      default:
+        return 8;
+    }
+  }
+
+  getMinesCount() {
+    switch (this.difficulty) {
+      case "0":
+        return 10;
+      case "1":
+        return 40;
+      case "2":
+        return 99;
+      default:
+        return 10;
+    }
+  }
+
 
   // Check cells for mines by passing the API
   // ...the row and column of each cell clicked.
@@ -46,16 +96,17 @@ class Game {
       return
     }
     axios
-      .post(
-        `https://minesweeper-api.herokuapp.com/games/${this.api.id}/check`,
-        {
-          row: row,
-          col: col
-        }
-      )
-      .then(response => {
-        this.api = response.data
-      })
+    .patch(
+      `${API_URL}/${this.game.id}`,
+      {
+        row: row,
+        column: col,
+        cellUpdateAction: 'REVEAL'
+      }
+    )
+    .then(response => {
+      this.game = response.data
+    })
   }
 
   // flag cells that you think have mines in them
@@ -70,13 +121,38 @@ class Game {
       return
     }
     axios
-      .post(`https://minesweeper-api.herokuapp.com/games/${this.api.id}/flag`, {
+    .patch(
+      `${API_URL}/${this.game.id}`,
+      {
         row: row,
-        col: col
-      })
-      .then(response => {
-        this.api = response.data
-      })
+        column: col,
+        cellUpdateAction: 'ADD_RED_FLAG'
+      }
+    )
+    .then(response => {
+      this.game = response.data
+    })
+  };
+
+  unFlagCell = (row, col) => {
+    // Guard clause
+    // Denies user the ability to flag cells before a
+    // ...new game has started
+    if (!this.playing) {
+      return
+    }
+    axios
+    .patch(
+      `${API_URL}/${this.game.id}`,
+      {
+        row: row,
+        column: col,
+        cellUpdateAction: 'UNFLAG'
+      }
+    )
+    .then(response => {
+      this.game = response.data
+    })
   }
 
   // Change the size of the gameboard
@@ -90,7 +166,7 @@ class Game {
 decorate(Game, {
   difficulty: observable,
   playing: observable,
-  api: observable
+  game: observable
 })
 
 export default new Game()

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { decorate, computed, observable } from 'mobx'
 import { observer } from 'mobx-react'
 
 import './App.css'
@@ -13,26 +12,26 @@ class App extends Component {
   // ...or displaying the number of which game they're playing.
   headerText = () => {
     if (ourGame.playing) {
-      if (ourGame.api.state === 'won') {
+      if (ourGame.game.outcome === undefined) {
+        return `${ourGame.game.username}`
+      } else if (ourGame.game.outcome === 'WON') {
         return 'You win!'
-      } else if (ourGame.api.state === 'lost') {
+      } else if (ourGame.game.outcome === 'LOST') {
         return 'You lose!'
       }
     }
 
     if (!ourGame.playing) {
-      return 'Start a new game!'
-    } else {
-      return `Game number: ${ourGame.api.id}`
+      return 'Click on the smiley face to start!'
     }
   }
 
   // Change the emoji face based on whether
   // ...you're playing the game, won the game, or lost.
   buttonText = () => {
-    if (ourGame.api.state === 'lost') {
+    if (ourGame.game.outcome === 'LOST') {
       return '😭'
-    } else if (ourGame.api.state === 'won') {
+    } else if (ourGame.game.outcome === 'WON') {
       return '🤩'
     } else {
       return '🙂'
@@ -44,7 +43,7 @@ class App extends Component {
   // ...then display how many mines they have left to flag.
   minesText = () => {
     if (ourGame.playing) {
-      return `${ourGame.api.mines} mines left`
+      return `${ourGame.game.board.minesCount} mines`
     } else {
       return ''
     }
@@ -52,21 +51,22 @@ class App extends Component {
 
   // Creates the gameboard dynamically
   boardRows = () => {
-    return ourGame.api.board.map((row, rowIndex) => {
+    return ourGame.game.board.cells.map((row, rowIndex) => {
       return (
         <tr key={rowIndex}>
-          {row.map((value, index) => {
-            return <Cell key={index} row={rowIndex} col={index} value={value} />
+          {row.map((element, index) => {
+            return <Cell key={index} row={rowIndex} column={index} mine={element.mine} revealed={element.revealed}
+                         flag={element.flag} minesAround={element.minesAround}/>
           })}
         </tr>
       )
     })
   }
 
-  // Makes the headers and footer of the gameboard
-  // ...match the length of the rows of the gameboard
+  // Makes the headers of the gameboard
+  // ...match the length of the columns of the gameboard
   boardSize = () => {
-    return ourGame.api.board[0].length
+    return ourGame.game.board.columnsCount
   }
 
   render() {
@@ -74,33 +74,29 @@ class App extends Component {
       <div className="App">
         <table>
           <tbody>
-            <tr>
-              <td className="header" colSpan={this.boardSize()}>
-                <select onChange={ourGame.chooseDifficulty}>
-                  <option value="0">Easy</option>
-                  <option value="1">Intermediate</option>
-                  <option value="2">Expert</option>
-                </select>
-                <button onClick={ourGame.startNewGame}>
-                  {this.buttonText()}
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td className={ourGame.api.state} colSpan={this.boardSize()}>
-                {this.headerText()}
-              </td>
-            </tr>
-            {this.boardRows()}
-            <tr>
-              <td className="footer" colSpan={this.boardSize()}>
-                {this.minesText()}
-              </td>
-            </tr>
+          <tr>
+            <td className="header" colSpan={this.boardSize()}>
+              <select onChange={ourGame.chooseDifficulty}>
+                <option value="0">Easy</option>
+                <option value="1">Intermediate</option>
+                <option value="2">Expert</option>
+              </select>
+              <button onClick={ourGame.startNewGame}>
+                {this.buttonText()}
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td className={ourGame.game.outcome} colSpan={this.boardSize()}>
+              {this.headerText()}
+            </td>
+          </tr>
+          {this.boardRows()}
           </tbody>
         </table>
       </div>
     )
   }
 }
+
 export default observer(App)
