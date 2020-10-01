@@ -17,6 +17,12 @@ yarn start
 This will start the game in http://localhost:3000/. The REST API that implements the logic and persistence is located at
 https://minesweeper2020.herokuapp.com
 
+### How to deploy to Heroku (only the project owner can do this)
+
+```shell script
+git push heroku master
+```
+
 ### Technologies Used
 
 HTML, CSS, Javascript, React, Axios, MobX
